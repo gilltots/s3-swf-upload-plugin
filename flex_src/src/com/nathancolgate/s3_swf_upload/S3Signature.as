@@ -25,10 +25,11 @@ package com.nathancolgate.s3_swf_upload {
 			upload_options.FileSize         = _file.size.toString();
 			upload_options.FileName         = getFileName(_file);
 			upload_options.ContentType      = getContentType(upload_options.FileName);
+			upload_options.ContentDisposition = "attachment; filename=" + upload_options.FileName;
 			upload_options.key              = prefixPath + upload_options.FileName;
 			
 			var variables:URLVariables 			= new URLVariables();
-			variables.key              			= upload_options.key
+			variables.filename              = upload_options.FileName
 			variables.content_type     			= upload_options.ContentType;
 		                              		
 			var request:URLRequest     			= new URLRequest(signatureUrl);
@@ -72,6 +73,7 @@ package com.nathancolgate.s3_swf_upload {
       var xml:XML  = new XML(loader.data);
       
       // create the s3 options object
+      upload_options.key            = xml.key;
       upload_options.policy         = xml.policy;
       upload_options.signature      = xml.signature;
       upload_options.bucket         = xml.bucket;
@@ -79,6 +81,7 @@ package com.nathancolgate.s3_swf_upload {
       upload_options.acl            = xml.acl;
       upload_options.Expires        = xml.expirationdate;
       upload_options.Secure         = xml.https;
+      upload_options.ContentDisposition = xml["Content-Disposition"];
 
       if (xml.errorMessage != "") {
 				ExternalInterface.call('s3_swf.onSignatureXMLError',toJavascript(_file),xml.errorMessage);

@@ -13,11 +13,13 @@ class S3UploadsController < ApplicationController
     access_key_id   = S3SwfUpload::S3Config.access_key_id
     acl             = S3SwfUpload::S3Config.acl
     secret_key      = S3SwfUpload::S3Config.secret_access_key
-    key             = params[:key]
+    filename        = params[:filename]
+    key             = rand(10000000) #CHANGE THIS TO WHATEVER SCHEME YOU WANT TO USE FOR KEY GENERATION, GUID ETC
     content_type    = params[:content_type]
     https           = 'false'
     error_message   = ''
     expiration_date = 1.hours.from_now.utc.strftime('%Y-%m-%dT%H:%M:%S.000Z')
+    cd = "attachment; filename=#{filename.gsub(/'/,"")}"
 
     policy = Base64.encode64(
 "{
@@ -27,7 +29,7 @@ class S3UploadsController < ApplicationController
         {'key': '#{key}'},
         {'acl': '#{acl}'},
         {'Content-Type': '#{content_type}'},
-        {'Content-Disposition': 'attachment'},
+        {'Content-Disposition': '#{cd}'},
         ['starts-with', '$Filename', ''],
         ['eq', '$success_action_status', '201']
     ]
@@ -39,13 +41,15 @@ class S3UploadsController < ApplicationController
       format.xml {
         render :xml => {
           :policy          => policy,
+          :key             => key,
           :signature       => signature,
           :bucket          => bucket,
           :accesskeyid     => access_key_id,
           :acl             => acl,
           :expirationdate  => expiration_date,
           :https           => https,
-          :errorMessage    => error_message.to_s
+          :errorMessage    => error_message.to_s,
+          :"Content-Disposition" => cd
         }.to_xml
       }
     end
