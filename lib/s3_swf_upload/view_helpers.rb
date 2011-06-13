@@ -3,7 +3,7 @@ module S3SwfUpload
     def s3_swf_upload_tag(options = {})
       buttonWidth             = options[:buttonWidth]  || 100
       buttonHeight            = options[:buttonHeight] || 30
-    	flashVersion            = options[:height] || '9.0.0'
+    	flashVersion            = options[:flashVersion] || '10.2'
     	queueSizeLimit          = options[:queueSizeLimit] || 100
     	fileSizeLimit           = options[:fileSizeLimit] || 524288000
       fileTypes               = options[:fileTypes] || '*.*'
