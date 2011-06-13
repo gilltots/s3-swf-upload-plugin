@@ -31,6 +31,7 @@ package com.nathancolgate.s3_swf_upload {
 			var variables:URLVariables 			= new URLVariables();
 			variables.filename              = upload_options.FileName
 			variables.content_type     			= upload_options.ContentType;
+			variables.size_in_bytes         = upload_options.FileSize;
 		                              		
 			var request:URLRequest     			= new URLRequest(signatureUrl);
 			request.method             			= URLRequestMethod.GET;
